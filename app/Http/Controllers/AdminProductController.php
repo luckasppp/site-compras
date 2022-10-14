@@ -18,16 +18,34 @@ class AdminProductController extends Controller
     }
 
     // Mostrar a página de editar produto
-    public function edit()
+    public function edit(Product $product)
     {
-        $products = Product::all();
-        return view('admin.product_edit');
+        return view('admin.product_edit', [
+            'product' => $product
+        ]);
     }
 
     // Recebe requisição para dar update
-    public function update()
+    public function update(Product $product, Request $request)
     {
-        # code...
+        $input = $request -> validate([
+            'name' => 'string|required',
+            'price' => 'string|required',
+            'stock' => 'integer|nullable',
+            'cover' => 'file|nullable',
+            'description' => 'string|nullable',
+        ]);
+
+        if (!empty($input['cover']) && $input['cover']->isValid()) {
+            $file = $input['cover'];
+            $path = $file->store('public/products');
+            $input['cover'] = $path;
+        }
+
+        $product->fill($input);
+        $product->save();
+
+        Return Redirect::route('admin.product');
     }
 
     // Mostrar página de criar
