@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductStoreRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\Input;
 use Illuminate\Support\Str;
 use PhpParser\Node\Stmt\Return_;
@@ -26,17 +28,12 @@ class AdminProductController extends Controller
     }
 
     // Recebe requisição para dar update
-    public function update(Product $product, Request $request)
+    public function update(Product $product, ProductStoreRequest $request)
     {
-        $input = $request -> validate([
-            'name' => 'string|required',
-            'price' => 'string|required',
-            'stock' => 'integer|nullable',
-            'cover' => 'file|nullable',
-            'description' => 'string|nullable',
-        ]);
+        $input = $request -> validate();
 
         if (!empty($input['cover']) && $input['cover']->isValid()) {
+            Storage::delete($product->cover ?? ''); // Comando que exclui registros anteriores da imagem
             $file = $input['cover'];
             $path = $file->store('public/products');
             $input['cover'] = $path;
@@ -55,15 +52,9 @@ class AdminProductController extends Controller
     }
 
     // Recebe a requisição de criar
-    public function store(Request $request)
+    public function store(ProductStoreRequest $request)
     {
-        $input = $request -> validate([
-            'name' => 'string|required',
-            'price' => 'string|required',
-            'stock' => 'integer|nullable',
-            'cover' => 'file|nullable',
-            'description' => 'string|nullable',
-        ]);
+        $input = $request -> validate();
         $input['slug'] = Str::slug($input['name']);
 
         // Método para substituir local do arquivo por um caminho
@@ -76,5 +67,23 @@ class AdminProductController extends Controller
         Product::create($input);
 
         Return Redirect::route('admin.product');
+    }
+
+    public function destroy(Product $product)
+    {
+        $product->delete();
+        Storage::delete($product->cover ?? ''); // Comando que exclui registros anteriores da imagem
+        
+        return Redirect::route('admin.product');
+    }
+
+    public function destroyImage(Product $product)
+    {
+        Storage::delete($product->cover ?? '');
+        $product->cover = null;
+        $product->save();
+
+        return Redirect::back();
+         
     }
 }
