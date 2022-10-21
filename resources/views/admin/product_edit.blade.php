@@ -20,7 +20,7 @@
                             <div class="relative">
                                 <label for="name" class="leading-7 text-sm text-gray-600">Nome do produto</label>
                                 <input
-                                    value="{{ old('name') ?? $product->name }}"
+                                    value="{{ old('name', $product->name) }}"
                                     type="text" id="name" name="name" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                             </div>
                             @error('name')
@@ -45,7 +45,7 @@
                             <div class="relative">
                                 <label for="name" class="leading-7 text-sm text-gray-600">Estoque</label>
                                 <input
-                                    value="{{ old('stock') ?? $product->stock }}"
+                                    value="{{ old('stock', $product->stock) }}"
                                     type="text" id="stock" name="stock"
                                     class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                             </div>
@@ -78,7 +78,7 @@
                                 <label for="name" class="leading-7 text-sm text-gray-600">Descrição</label>
                                 <textarea
                                     id="description" name="description"
-                                    class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ $product->description }}</textarea>
+                                    class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ old('description', $product->description) }}</textarea>
                             </div>
                             @error('description')
                                 <div class="text-red-400 text-sm">{{ $message }}</div>
